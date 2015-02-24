@@ -286,6 +286,7 @@
     <Compile Include="Gauges\KA-50\RotorRPM\RotorRPM.cs" />
     <Compile Include="Gauges\KA-50\Tachometer\Tachometer.cs" />
     <Compile Include="Gauges\KA-50\VVI\VVI.cs" />
+    <Compile Include="Gauges\UH-1H\DualTachometer\DualTachometer.cs" />
     <Compile Include="HeliosAction.cs" />
     <Compile Include="HeliosActionCollection.cs" />
     <Compile Include="HeliosActionEventArgs.cs" />
@@ -1845,6 +1846,18 @@
       <SubType>Designer</SubType>
     </Resource>
     <Resource Include="Gauges\KA-50\VVI\vvi_needle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\UH-1H\DualTachometer\dual_tachometer_bezel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\UH-1H\DualTachometer\dual_tachometer_faceplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Gauges\UH-1H\DualTachometer\dual_tachometer_needle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
