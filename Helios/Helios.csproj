@@ -444,6 +444,14 @@
       <DependentUpon>KeyboardInterfaceEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\Profile\ProfileInterface.cs" />
+    <Compile Include="Interfaces\SSOHListener\SSOHAlert.cs" />
+    <Compile Include="Interfaces\SSOHListener\SSOHListenerInterfaceEditor.xaml.cs">
+      <DependentUpon>SSOHListenerInterfaceEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\SSOHListener\SSOHListenerInterface.cs" />
+    <Compile Include="TCPInterface\BaseTCPInterface.cs" />
+    <Compile Include="TCPInterface\TCPFunction.cs" />
+    <Compile Include="TCPInterface\TCPFunctionCollection.cs" />
     <Compile Include="UnitConverters\AreaConverter.cs" />
     <Compile Include="UnitConverters\DistanceConverter.cs" />
     <Compile Include="UnitConverters\MassConverter.cs" />
@@ -910,6 +918,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Templates\Base\Rotaries\Rotary - Knob 5.htpl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Base\SSOH\SSOH FAIL.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Templates\Base\Threeway Toggles\Flat Top - Locking.htpl">
@@ -1877,6 +1888,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interfaces\Keyboard\KeyboardInterfaceEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interfaces\SSOHListener\SSOHListenerInterfaceEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
