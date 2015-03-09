@@ -270,17 +270,19 @@ namespace GadrocsWorkshop.Helios.TCPInterface
         // TODO work here
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
+            /*
             _started = false;
             _socket.Close();
             _socket = null;
-
             _profile = null;
+            */ 
         }
 
         // TODO work here
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
             ConfigManager.LogManager.LogDebug("UDP interface starting. (Interface=\"" + Name + "\")");
+            /*
             _bindEndPoint = new IPEndPoint(IPAddress.Any, Port);
             _socket = new Socket(AddressFamily.InterNetwork,
                                       SocketType.Dgram,
@@ -294,6 +296,7 @@ namespace GadrocsWorkshop.Helios.TCPInterface
             WaitForData();
 
             _profile = Profile;
+            */
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)

@@ -32,7 +32,7 @@ namespace GadrocsWorkshop.Helios.Interfaces.SSOHListener
         public SSOHListenerInterface()
             : base("SSOH Listener")
         {
-            AddFunction(new SSOHAlert(this, SSOH_LISTENER, SSOH_FAIL_ACK, "0", "SSOH Listener", "Acknowledge SSOH FAIL"));
+            AddFunction(new SSOHAlert(this, SSOH_LISTENER, SSOH_FAIL_ACK, "0", "HeliosSSOH", "SSOH FAIL"));
         }
 
         public int SSOHPort

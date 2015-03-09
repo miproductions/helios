@@ -31,7 +31,7 @@ namespace GadrocsWorkshop.Helios
         static VersionChecker()
         {
             GetRunningVersion();
-            GetCurrentVersion();
+            // GetCurrentVersion();
         }
 
         public static void CheckVersion()
