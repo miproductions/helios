@@ -29,7 +29,8 @@ namespace GadrocsWorkshop.Helios
         public LogManager(string path, LogLevel level)
         {
             _logFile = path;
-            _level = level;
+            // _level = level;
+            _level = LogLevel.Debug; // TODO Revert
         }
 
         #region Properties
