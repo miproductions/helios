@@ -569,6 +569,7 @@
   <ItemGroup>
     <Resource Include="Interfaces\DCS\FC2\Export.lua" />
     <Resource Include="Interfaces\DCS\FC2\ExportFunctions.lua" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Templates\Base\A-10\0.htpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

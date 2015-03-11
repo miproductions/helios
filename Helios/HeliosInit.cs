@@ -46,7 +46,6 @@ namespace GadrocsWorkshop.Helios
             }
 
             ConfigManager.LogManager = new LogManager(logPath, logLevel);
-
             Assembly execAssembly = Assembly.GetExecutingAssembly();
             ConfigManager.LogManager.Log("Helios Version " + execAssembly.GetName().Version);
 

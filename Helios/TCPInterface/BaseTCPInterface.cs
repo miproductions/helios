@@ -15,8 +15,10 @@ namespace GadrocsWorkshop.Helios.TCPInterface
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Net;
     using System.Net.Sockets;
+    using System.Threading;
 
     public class BaseTCPInterface : HeliosInterface
     {
@@ -39,6 +41,9 @@ namespace GadrocsWorkshop.Helios.TCPInterface
 
         private string[] _tokens = new string[1024];
         private int _tokenCount = 0;
+
+        private IPEndPoint _ipep;
+        static TcpListener LISTENER;
 
         public BaseTCPInterface(string name)
             : base(name)
@@ -120,25 +125,42 @@ namespace GadrocsWorkshop.Helios.TCPInterface
         // TODO work here
         private void WaitForData()
         {
-            if (_started)
+            while (_started)
             {
-                ConfigManager.LogManager.LogDebug("UDP interface waiting for socket data. (Interface=\"" + Name + "\")");
+                ConfigManager.LogManager.LogDebug("TCP interface waiting for socket data. (Interface=\"" + Name + "\")");
                 try
                 {
-                    _socket.BeginReceiveFrom(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, ref _bindEndPoint, _socketDataCallback, null);
+                    _socket = LISTENER.AcceptSocket(); // blocks thread waiting for connection
+                    ConfigManager.LogManager.LogDebug(String.Format("Connected: {0}", _socket.RemoteEndPoint));
+
+                    Stream s = new NetworkStream(_socket);
+                    StreamReader sr = new StreamReader(s);
+                    StreamWriter sw = new StreamWriter(s);
+                    sw.AutoFlush = true; // enable automatic flushing
+                    while (true)
+                    {
+                        string line = sr.ReadLine(); // blocks thread waiting for data
+                        if (line == "" || line == null) break;
+                        ConfigManager.LogManager.LogDebug(String.Format("Socket data: {0}", line));
+                        // TODO handle the data through Helios
+                    }
+                    s.Close();
+                    ConfigManager.LogManager.LogDebug(String.Format("Normal Disconnection: {0}", _socket.RemoteEndPoint));
                 }
                 catch (SocketException se)
                 {
-                    if (HandleSocketException(se))
-                    {
-                        _socket.BeginReceiveFrom(_dataBuffer, 0, _dataBuffer.Length, SocketFlags.None, ref _bindEndPoint, _socketDataCallback, null);
-                    }
-                    else
-                    {
-                        ConfigManager.LogManager.LogError("UDP interface unable to recover from socket reset, no longer recieving data. (Interface=\"" + Name + "\")");
-                    }
+                    ConfigManager.LogManager.LogError(String.Format("TCP interface {0} SocketException: {1}", Name, se.Message));
+                }
+                catch (Exception e)
+                {
+                    ConfigManager.LogManager.LogError(String.Format("TCP interface {0} Exception: {1}", Name, e.Message));
+                }
+                finally
+                {
+                    if (_socket != null) _socket.Close();
                 }
             }
+
         }
 
         // TODO work here
@@ -154,13 +176,13 @@ namespace GadrocsWorkshop.Helios.TCPInterface
                         // Don't create the extra strings if we don't need to
                         if (ConfigManager.LogManager.LogLevel == LogLevel.Debug)
                         {
-                            ConfigManager.LogManager.LogDebug("UDP Interface received packet. (Interfae=\"" + Name + "\", Packet=\"" + System.Text.Encoding.UTF8.GetString(_dataBuffer, 0, receivedByteCount) + "\")");
+                            ConfigManager.LogManager.LogDebug("TCP Interface received packet. (Interfae=\"" + Name + "\", Packet=\"" + System.Text.Encoding.UTF8.GetString(_dataBuffer, 0, receivedByteCount) + "\")");
                         }
 
                         String packetClientID = System.Text.Encoding.UTF8.GetString(_dataBuffer, 0, 8);
                         if (!_clientID.Equals(packetClientID))
                         {
-                            ConfigManager.LogManager.LogInfo("UDP interface new client connected, sending data reset command. (Interface=\"" + Name + "\", Client=\"" + _client.ToString() + "\", Client ID=\"" + packetClientID + "\")");
+                            ConfigManager.LogManager.LogInfo("TCP interface new client connected, sending data reset command. (Interface=\"" + Name + "\", Client=\"" + _client.ToString() + "\", Client ID=\"" + packetClientID + "\")");
                             _connectedTrigger.FireTrigger(BindingValue.Empty);
                             _clientID = packetClientID;
                             SendData("R");
@@ -189,7 +211,7 @@ namespace GadrocsWorkshop.Helios.TCPInterface
                     }
                     else
                     {
-                        ConfigManager.LogManager.LogWarning("UDP interface short packet received. (Interface=\"" + Name + "\")");
+                        ConfigManager.LogManager.LogWarning("TCP interface short packet received. (Interface=\"" + Name + "\")");
                     }
                 }
             }
@@ -199,7 +221,7 @@ namespace GadrocsWorkshop.Helios.TCPInterface
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("UDP interface threw unhandled exception processing packet. (Interface=\"" + Name + "\")", e);
+                ConfigManager.LogManager.LogError("TCP interface threw unhandled exception processing packet. (Interface=\"" + Name + "\")", e);
             }
 
             WaitForData();
@@ -217,12 +239,12 @@ namespace GadrocsWorkshop.Helios.TCPInterface
                 }
                 else
                 {
-                    ConfigManager.LogManager.LogWarning("UDP interface recieved data for missing function. (Key=\"" + _tokens[i] + "\")");
+                    ConfigManager.LogManager.LogWarning("TCP interface recieved data for missing function. (Key=\"" + _tokens[i] + "\")");
                 }
             }
 
         }
-        
+
         // TODO work here
         private bool HandleSocketException(SocketException se)
         {
@@ -240,7 +262,7 @@ namespace GadrocsWorkshop.Helios.TCPInterface
             }
             else
             {
-                ConfigManager.LogManager.LogError("UDP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
+                ConfigManager.LogManager.LogError("TCP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
                 return false;
             }
         }
@@ -252,7 +274,7 @@ namespace GadrocsWorkshop.Helios.TCPInterface
             {
                 if (_client != null && _clientID.Length > 0)
                 {
-                    ConfigManager.LogManager.LogDebug("UDP interface sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
+                    ConfigManager.LogManager.LogDebug("TCP interface sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
                     byte[] sendData = System.Text.Encoding.UTF8.GetBytes(data + "\n");
                     _socket.SendTo(sendData, _client);
                 }
@@ -263,7 +285,7 @@ namespace GadrocsWorkshop.Helios.TCPInterface
             }
             catch (Exception e)
             {
-                ConfigManager.LogManager.LogError("UDP interface threw unhandled exception sending data. (Interface=\"" + Name + "\")", e);
+                ConfigManager.LogManager.LogError("TCP interface threw unhandled exception sending data. (Interface=\"" + Name + "\")", e);
             }
         }
 
@@ -271,29 +293,27 @@ namespace GadrocsWorkshop.Helios.TCPInterface
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
             _started = false;
-            _socket.Close();
+            if (_socket != null) _socket.Close();
             _socket = null;
-
+            if (LISTENER != null) LISTENER.Stop();
+            LISTENER = null;
             _profile = null;
+            ConfigManager.LogManager.LogDebug("TCP interface stopped. (Interface=\"" + Name + "\")");
         }
 
         // TODO work here
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
-            ConfigManager.LogManager.LogDebug("UDP interface starting. (Interface=\"" + Name + "\")");
-            _bindEndPoint = new IPEndPoint(IPAddress.Any, Port);
-            _socket = new Socket(AddressFamily.InterNetwork,
-                                      SocketType.Dgram,
-                                      ProtocolType.Udp);
-            _socket.ExclusiveAddressUse = false;
-            _socket.Bind(_bindEndPoint);
-            _client = new IPEndPoint(IPAddress.Any, 0);
+            ConfigManager.LogManager.LogDebug("TCP interface starting. (Interface=\"" + Name + "\")");
+
+            _ipep = new IPEndPoint(IPAddress.Any, Port);
+            LISTENER = new TcpListener(_ipep);
+            LISTENER.Start();
             _started = true;
-            _clientID = "";
-
-            WaitForData();
-
             _profile = Profile;
+            Thread t = new Thread(new ThreadStart(WaitForData));
+            t.IsBackground = true; // required for closing on program exit
+            t.Start();
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)
@@ -320,7 +340,7 @@ namespace GadrocsWorkshop.Helios.TCPInterface
         public override void Reset()
         {
             base.Reset();
-            foreach(TCPFunction function in Functions)
+            foreach (TCPFunction function in Functions)
             {
                 function.Reset();
             }

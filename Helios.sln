@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helios", "Helios\Helios.csproj", "{E5ABE3F5-46EC-46D1-9330-D42311471A93}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Control Center", "Control Center\Control Center.csproj", "{80D80B0F-0DC0-49E2-97C2-3CC6436FA61F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phidgets", "Phidgets\Phidgets.csproj", "{06BA10F4-279C-4E82-B77C-333706A617B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCPInterfaceTestClient", "TCPInterfaceTestClient\TCPInterfaceTestClient.csproj", "{C456429A-0384-4DE9-BD64-E42FF8CBB5A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{06BA10F4-279C-4E82-B77C-333706A617B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06BA10F4-279C-4E82-B77C-333706A617B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06BA10F4-279C-4E82-B77C-333706A617B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C456429A-0384-4DE9-BD64-E42FF8CBB5A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C456429A-0384-4DE9-BD64-E42FF8CBB5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C456429A-0384-4DE9-BD64-E42FF8CBB5A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C456429A-0384-4DE9-BD64-E42FF8CBB5A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
