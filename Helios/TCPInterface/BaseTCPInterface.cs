@@ -245,51 +245,6 @@ namespace GadrocsWorkshop.Helios.TCPInterface
 
         }
 
-        // TODO work here
-        private bool HandleSocketException(SocketException se)
-        {
-            if (se.ErrorCode == 10054)
-            {
-                _socket.Close();
-                _socket = null;
-                _socket = new Socket(AddressFamily.InterNetwork,
-                                          SocketType.Dgram,
-                                          ProtocolType.Udp);
-                _socket.Bind(_bindEndPoint);
-                _clientID = "";
-                _client = new IPEndPoint(IPAddress.Any, 0);
-                return true;
-            }
-            else
-            {
-                ConfigManager.LogManager.LogError("TCP interface threw unhandled exception handling socket reset. (Interface=\"" + Name + "\")", se);
-                return false;
-            }
-        }
-
-        // TODO work here
-        public void SendData(string data)
-        {
-            try
-            {
-                if (_client != null && _clientID.Length > 0)
-                {
-                    ConfigManager.LogManager.LogDebug("TCP interface sending data. (Interface=\"" + Name + "\", Data=\"" + data + "\")");
-                    byte[] sendData = System.Text.Encoding.UTF8.GetBytes(data + "\n");
-                    _socket.SendTo(sendData, _client);
-                }
-            }
-            catch (SocketException se)
-            {
-                HandleSocketException(se);
-            }
-            catch (Exception e)
-            {
-                ConfigManager.LogManager.LogError("TCP interface threw unhandled exception sending data. (Interface=\"" + Name + "\")", e);
-            }
-        }
-
-        // TODO work here
         void Profile_ProfileStopped(object sender, EventArgs e)
         {
             _started = false;
@@ -298,10 +253,9 @@ namespace GadrocsWorkshop.Helios.TCPInterface
             if (LISTENER != null) LISTENER.Stop();
             LISTENER = null;
             _profile = null;
-            ConfigManager.LogManager.LogDebug("TCP interface stopped. (Interface=\"" + Name + "\")");
+            ConfigManager.LogManager.LogDebug("TCPInterface stopped. (Interface=\"" + Name + "\")");
         }
 
-        // TODO work here
         void Profile_ProfileStarted(object sender, EventArgs e)
         {
             ConfigManager.LogManager.LogDebug("TCP interface starting. (Interface=\"" + Name + "\")");
@@ -344,7 +298,6 @@ namespace GadrocsWorkshop.Helios.TCPInterface
             {
                 function.Reset();
             }
-            SendData("R");
         }
     }
 }
